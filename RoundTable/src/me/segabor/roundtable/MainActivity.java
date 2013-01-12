@@ -1,5 +1,8 @@
 package me.segabor.roundtable;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -25,6 +28,8 @@ public class MainActivity extends Activity implements TuioListener {
 	private Triangle triangle2;
 
 	private TuioClient receiver;
+	
+	private Set<TuioObject> activeObjects = new HashSet<TuioObject>();
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -89,10 +94,18 @@ public class MainActivity extends Activity implements TuioListener {
 			gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 			
 			gl.glLoadIdentity();
+			/*
 			gl.glTranslatef(0.0f, 0.0f, -5.0f);
 			triangle1.draw(gl);
 			gl.glTranslatef(2.0f, 0.0f, -5.0f);
 			triangle2.draw(gl);
+			*/
+			
+			for (TuioObject o : activeObjects) {
+				gl.glLoadIdentity();
+				gl.glTranslatef(o.getX(), -o.getY(), -5 );
+				triangle1.draw(gl);
+			}
 		}
 
 		@Override
@@ -107,16 +120,19 @@ public class MainActivity extends Activity implements TuioListener {
 	@Override
 	public void addTuioObject(TuioObject tobj) {
 		Log.d(LOG_NAME, "ADD");
+		
+		activeObjects.add(tobj);
 	}
 
 	@Override
 	public void updateTuioObject(TuioObject tobj) {
-		Log.d(LOG_NAME, "UPDATE");
+		// Log.d(LOG_NAME, "UPDATE; x=" + tobj.getX() + "; y=" + tobj.getY());
 	}
 
 	@Override
 	public void removeTuioObject(TuioObject tobj) {
 		Log.d(LOG_NAME, "REMOVE");
+		activeObjects.remove(tobj);
 	}
 
 	@Override
@@ -136,6 +152,6 @@ public class MainActivity extends Activity implements TuioListener {
 
 	@Override
 	public void refresh(TuioTime ftime) {
-		Log.d(LOG_NAME, "REFRESH T");
+		// Log.d(LOG_NAME, "REFRESH T");
 	}
 }
