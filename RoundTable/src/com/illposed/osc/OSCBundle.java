@@ -18,18 +18,18 @@
 
 package com.illposed.osc;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.GregorianCalendar;
-import java.util.Vector;
+import java.util.List;
 
-import com.illposed.osc.utility.*;
+import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
 
 public class OSCBundle extends OSCPacket {
 
 	protected Date timestamp;
 	//	protected OSCPacket[] packets;
-	protected Vector<OSCPacket> packets;
+	protected List<OSCPacket> packets;
 	public static final BigInteger SECONDS_FROM_1900_to_1970 =
 		new BigInteger("2208988800");
 	// 17 leap years
@@ -64,12 +64,12 @@ public class OSCBundle extends OSCPacket {
 	public OSCBundle(OSCPacket[] newPackets, Date newTimestamp) {
 		super();
 		if (null != newPackets) {
-			packets = new Vector<OSCPacket>(newPackets.length);
+			packets = new ArrayList<OSCPacket>(newPackets.length);
 			for (int i = 0; i < newPackets.length; i++) {
 				packets.add(newPackets[i]);
 			}
 		} else
-			packets = new Vector<OSCPacket>();
+			packets = new ArrayList<OSCPacket>();
 		timestamp = newTimestamp;
 		init();
 	}
@@ -125,11 +125,8 @@ public class OSCBundle extends OSCPacket {
 	protected void computeByteArray(OSCJavaToByteArrayConverter stream) {
 		stream.write("#bundle");
 		computeTimeTagByteArray(stream);
-		Enumeration enm = packets.elements();
-		OSCPacket nextElement;
 		byte[] packetBytes;
-		while (enm.hasMoreElements()) {
-			nextElement = (OSCPacket) enm.nextElement();
+		for (OSCPacket nextElement : packets) {
 			packetBytes = nextElement.getByteArray();
 			stream.write(packetBytes.length);
 			stream.write(packetBytes);

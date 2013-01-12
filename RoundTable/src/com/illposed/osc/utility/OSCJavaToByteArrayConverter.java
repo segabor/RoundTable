@@ -18,17 +18,16 @@
 
 package com.illposed.osc.utility;
 
-import java.io.IOException;
 import java.io.ByteArrayOutputStream;
-import java.math.BigInteger;
-import java.util.Enumeration;
-import java.util.Vector;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 
 
 public class OSCJavaToByteArrayConverter {
 
 	protected ByteArrayOutputStream stream = new ByteArrayOutputStream();
-	private byte[] intBytes = new byte[4];
+
 
 	/*public OSCJavaToByteArrayConverter() {
 		super();
@@ -128,7 +127,7 @@ public class OSCJavaToByteArrayConverter {
 	 * Creation date: (2/23/2001 2:43:25 AM)
 	 * @param aClass Class
 	 */
-	public void writeType(Class c) {
+	public void writeType(Class<?> c) {
 		// A big ol' case statement -- what's polymorphism mean, again?
 		// I really wish I could extend the base classes!
 
@@ -205,14 +204,14 @@ public class OSCJavaToByteArrayConverter {
 	 * compatibility), rather than an array.
 	 * @param vector  the collection I am to write out types for
 	 */
-	public void writeTypes(Vector vector) {
+	public void writeTypes(List<?> vector) {
 		// A big ol' case statement in a for loop -- what's polymorphism mean, again?
 		// I really wish I could extend the base classes!
 
-		Enumeration enm = vector.elements();
+		Iterator<?> it = vector.iterator();
 		Object nextObject;
-		while (enm.hasMoreElements()) {
-			nextObject = enm.nextElement();
+		while (it.hasNext()) {
+			nextObject = it.next();
 			if (null == nextObject)
 				continue;
 			// if the array at i is a type of array write a [

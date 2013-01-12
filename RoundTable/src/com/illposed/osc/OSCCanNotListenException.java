@@ -12,6 +12,7 @@ package com.illposed.osc;
  * See license.txt (or license.rtf) for license information.
  */
 public class OSCCanNotListenException extends Exception {
+	private static final long serialVersionUID = -932015208334917542L;
 
 	/**
 	 * 

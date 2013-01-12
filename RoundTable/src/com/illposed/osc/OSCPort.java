@@ -14,8 +14,7 @@
 
 package com.illposed.osc;
 
-import java.net.*;
-import java.io.IOException;
+import java.net.DatagramSocket;
 
 public abstract class OSCPort {
 

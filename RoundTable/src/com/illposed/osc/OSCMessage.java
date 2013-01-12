@@ -14,15 +14,16 @@
 
 package com.illposed.osc;
 
-import java.util.Enumeration;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-import com.illposed.osc.utility.*;
+import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
 
 public class OSCMessage extends OSCPacket {
 
 	protected String address;
-	protected Vector<Object> arguments;
+	protected List<Object> arguments;
 
 	/**
 	 * Create an empty OSC Message
@@ -31,7 +32,7 @@ public class OSCMessage extends OSCPacket {
 	 */
 	public OSCMessage() {
 		super();
-		arguments = new Vector<Object>();
+		arguments = new ArrayList<Object>();
 	}
 
 	/**
@@ -51,12 +52,12 @@ public class OSCMessage extends OSCPacket {
 		super();
 		address = newAddress;
 		if (null != newArguments) {
-			arguments = new Vector<Object>(newArguments.length);
+			arguments = new ArrayList<Object>(newArguments.length);
 			for (int i = 0; i < newArguments.length; i++) {
 				arguments.add(newArguments[i]);
 			}
 		} else
-			arguments = new Vector<Object>();
+			arguments = new ArrayList<Object>();
 		init();
 	}
 	
@@ -100,9 +101,9 @@ public class OSCMessage extends OSCPacket {
 		if (null == arguments)
 			return;
 		stream.writeTypes(arguments);
-		Enumeration enm = arguments.elements();
-		while (enm.hasMoreElements()) {
-			stream.write(enm.nextElement());
+		Iterator<?> it = arguments.iterator();
+		while (it.hasNext()) {
+			stream.write(it.next());
 		}
 	}
 
