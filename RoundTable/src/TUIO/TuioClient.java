@@ -20,8 +20,16 @@
 */
 package TUIO;
 
-import com.illposed.osc.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+
+import com.illposed.osc.OSCListener;
+import com.illposed.osc.OSCMessage;
+import com.illposed.osc.OSCPortIn;
 
 /**
  * The TuioClient class is the central TUIO protocol decoder component. It provides a simple callback infrastructure using the {@link TuioListener} interface.
@@ -42,22 +50,22 @@ public class TuioClient implements OSCListener {
 	private OSCPortIn oscPort;
 	private boolean connected = false;
 	private Hashtable<Long,TuioObject> objectList = new Hashtable<Long,TuioObject>();
-	private Vector<Long> aliveObjectList = new Vector<Long>();
-	private Vector<Long> newObjectList = new Vector<Long>();
+	private List<Long> aliveObjectList = new ArrayList<Long>();
+	private List<Long> newObjectList = new ArrayList<Long>();
 	private Hashtable<Long,TuioCursor> cursorList = new Hashtable<Long,TuioCursor>();
-	private Vector<Long> aliveCursorList = new Vector<Long>();
-	private Vector<Long> newCursorList = new Vector<Long>();
+	private List<Long> aliveCursorList = new ArrayList<Long>();
+	private List<Long> newCursorList = new ArrayList<Long>();
 
-	private Vector<TuioObject> frameObjects = new Vector<TuioObject>();
-	private Vector<TuioCursor> frameCursors = new Vector<TuioCursor>();
+	private List<TuioObject> frameObjects = new ArrayList<TuioObject>();
+	private List<TuioCursor> frameCursors = new ArrayList<TuioCursor>();
 
-	private Vector<TuioCursor> freeCursorList = new Vector<TuioCursor>();
+	private List<TuioCursor> freeCursorList = new ArrayList<TuioCursor>();
 	private int maxCursorID = -1;
 	
 	private long currentFrame = 0;
 	private TuioTime currentTime;
 
-	private Vector<TuioListener> listenerList = new Vector<TuioListener>();
+	private List<TuioListener> listenerList = new ArrayList<TuioListener>();
 	
 	/**
 	 * The default constructor creates a client that listens to the default TUIO port 3333
@@ -118,7 +126,7 @@ public class TuioClient implements OSCListener {
 	 * @param  listener  the TuioListener to add
 	 */
 	public void addTuioListener(TuioListener listener) {
-		listenerList.addElement(listener);
+		listenerList.add(listener);
 	}
 	
 	/**
@@ -127,7 +135,7 @@ public class TuioClient implements OSCListener {
 	 * @param  listener  the TuioListener to remove
 	 */
 	public void removeTuioListener(TuioListener listener) {	
-		listenerList.removeElement(listener);
+		listenerList.remove(listener);
 	}
 
 	/**
@@ -142,8 +150,8 @@ public class TuioClient implements OSCListener {
 	 *
 	 * @return  a Vector of all currently active TuioObjects
 	 */
-	public Vector<TuioObject> getTuioObjects() {
-		return new Vector<TuioObject>(objectList.values());
+	public List<TuioObject> getTuioObjects() {
+		return new ArrayList<TuioObject>(objectList.values());
 	}
 	
 	/**
@@ -151,8 +159,8 @@ public class TuioClient implements OSCListener {
 	 *
 	 * @return  a Vector of all currently active TuioCursors
 	 */
-	public Vector<TuioCursor> getTuioCursors() {
-		return new Vector<TuioCursor>(cursorList.values());
+	public List<TuioCursor> getTuioCursors() {
+		return new ArrayList<TuioCursor>(cursorList.values());
 	}	
 
 	/**
@@ -206,7 +214,7 @@ public class TuioClient implements OSCListener {
 				if (objectList.get(s_id) == null) {
 				
 					TuioObject addObject = new TuioObject(s_id,c_id,xpos,ypos,angle);
-					frameObjects.addElement(addObject);
+					frameObjects.add(addObject);
 					
 				} else {
 				
@@ -216,7 +224,7 @@ public class TuioClient implements OSCListener {
 						
 						TuioObject updateObject = new TuioObject(s_id,c_id,xpos,ypos,angle);
 						updateObject.update(xpos,ypos,angle,xspeed,yspeed,rspeed,maccel,raccel);
-						frameObjects.addElement(updateObject);
+						frameObjects.add(updateObject);
 					}
 				
 				}
@@ -227,18 +235,18 @@ public class TuioClient implements OSCListener {
 				for (int i=1;i<args.length;i++) {
 					// get the message content
 					long s_id = ((Integer)args[i]).longValue();
-					newObjectList.addElement(s_id);
+					newObjectList.add(s_id);
 					// reduce the object list to the lost objects
 					if (aliveObjectList.contains(s_id))
-						 aliveObjectList.removeElement(s_id);
+						 aliveObjectList.remove(s_id);
 				}
 				
 				// remove the remaining objects
 				for (int i=0;i<aliveObjectList.size();i++) {
-					TuioObject removeObject = objectList.get(aliveObjectList.elementAt(i));
+					TuioObject removeObject = objectList.get(aliveObjectList.get(i));
 					if (removeObject==null) continue;
 					removeObject.remove(currentTime);
-					frameObjects.addElement(removeObject);
+					frameObjects.add(removeObject);
 				}
 					
 			} else if (command.equals("fseq")) {
@@ -255,16 +263,13 @@ public class TuioClient implements OSCListener {
 				}
 				
 				if (!lateFrame) {
-					Enumeration<TuioObject> frameEnum = frameObjects.elements();
-					while(frameEnum.hasMoreElements()) {
-						TuioObject tobj = frameEnum.nextElement();
-						
+					for (TuioObject tobj : frameObjects) {
 						switch (tobj.getTuioState()) {
 							case TuioObject.TUIO_REMOVED:
 								TuioObject removeObject = tobj;
 								removeObject.remove(currentTime);
 								for (int i=0;i<listenerList.size();i++) {
-									TuioListener listener = (TuioListener)listenerList.elementAt(i);
+									TuioListener listener = (TuioListener)listenerList.get(i);
 									if (listener!=null) listener.removeTuioObject(removeObject);
 								}								
 								objectList.remove(removeObject.getSessionID());
@@ -274,7 +279,7 @@ public class TuioClient implements OSCListener {
 								TuioObject addObject = new TuioObject(currentTime,tobj.getSessionID(),tobj.getSymbolID(),tobj.getX(),tobj.getY(),tobj.getAngle());
 								objectList.put(addObject.getSessionID(),addObject);
 								for (int i=0;i<listenerList.size();i++) {
-									TuioListener listener = (TuioListener)listenerList.elementAt(i);
+									TuioListener listener = (TuioListener)listenerList.get(i);
 									if (listener!=null) listener.addTuioObject(addObject);
 								}
 								break;
@@ -287,18 +292,18 @@ public class TuioClient implements OSCListener {
 									updateObject.update(currentTime,tobj.getX(),tobj.getY(),tobj.getAngle(),tobj.getXSpeed(),tobj.getYSpeed(),tobj.getRotationSpeed(),tobj.getMotionAccel(),tobj.getRotationAccel());
 
 								for (int i=0;i<listenerList.size();i++) {
-									TuioListener listener = (TuioListener)listenerList.elementAt(i);
+									TuioListener listener = (TuioListener)listenerList.get(i);
 									if (listener!=null) listener.updateTuioObject(updateObject);
 								}
 						}
 					}
 					
 					for (int i=0;i<listenerList.size();i++) {
-						TuioListener listener = (TuioListener)listenerList.elementAt(i);
+						TuioListener listener = (TuioListener)listenerList.get(i);
 						if (listener!=null) listener.refresh(new TuioTime(currentTime));
 					}
 					
-					Vector<Long> buffer = aliveObjectList;
+					List<Long> buffer = aliveObjectList;
 					aliveObjectList = newObjectList;
 					// recycling the vector
 					newObjectList = buffer;					
@@ -319,7 +324,7 @@ public class TuioClient implements OSCListener {
 				if (cursorList.get(s_id) == null) {
 									
 					TuioCursor addCursor = new TuioCursor(s_id, -1 ,xpos,ypos);
-					frameCursors.addElement(addCursor);
+					frameCursors.add(addCursor);
 					
 				} else {
 				
@@ -329,7 +334,7 @@ public class TuioClient implements OSCListener {
 
 						TuioCursor updateCursor = new TuioCursor(s_id,tcur.getCursorID(),xpos,ypos);
 						updateCursor.update(xpos,ypos,xspeed,yspeed,maccel);
-						frameCursors.addElement(updateCursor);
+						frameCursors.add(updateCursor);
 					}
 				}
 				
@@ -341,18 +346,18 @@ public class TuioClient implements OSCListener {
 				for (int i=1;i<args.length;i++) {
 					// get the message content
 					long s_id = ((Integer)args[i]).longValue();
-					newCursorList.addElement(s_id);
+					newCursorList.add(s_id);
 					// reduce the cursor list to the lost cursors
 					if (aliveCursorList.contains(s_id)) 
-						aliveCursorList.removeElement(s_id);
+						aliveCursorList.remove(s_id);
 				}
 				
 				// remove the remaining cursors
 				for (int i=0;i<aliveCursorList.size();i++) {
-					TuioCursor removeCursor = cursorList.get(aliveCursorList.elementAt(i));
+					TuioCursor removeCursor = cursorList.get(aliveCursorList.get(i));
 					if (removeCursor==null) continue;
 					removeCursor.remove(currentTime);
-					frameCursors.addElement(removeCursor);
+					frameCursors.add(removeCursor);
 				}
 								
 			} else if (command.equals("fseq")) {
@@ -367,10 +372,7 @@ public class TuioClient implements OSCListener {
 					currentTime = TuioTime.getSessionTime();
 				}
 				if (!lateFrame) {
-
-					Enumeration<TuioCursor> frameEnum = frameCursors.elements();
-					while(frameEnum.hasMoreElements()) {
-						TuioCursor tcur = frameEnum.nextElement();
+					for (TuioCursor tcur : frameCursors) {
 						
 						switch (tcur.getTuioState()) {
 							case TuioCursor.TUIO_REMOVED:
@@ -379,7 +381,7 @@ public class TuioClient implements OSCListener {
 								removeCursor.remove(currentTime);
 								
 								for (int i=0;i<listenerList.size();i++) {
-									TuioListener listener = (TuioListener)listenerList.elementAt(i);
+									TuioListener listener = (TuioListener)listenerList.get(i);
 									if (listener!=null) listener.removeTuioCursor(removeCursor);
 								}
 
@@ -394,14 +396,13 @@ public class TuioClient implements OSCListener {
 											if (c_id>maxCursorID) maxCursorID=c_id;
 										}
 										
-										Enumeration<TuioCursor> flist = freeCursorList.elements();
-										while (flist.hasMoreElements()) {
-											int c_id = flist.nextElement().getCursorID();
-											if (c_id>=maxCursorID) freeCursorList.removeElement(c_id);
+										for (TuioCursor c : freeCursorList) {
+											int c_id = c.getCursorID();
+											if (c_id>=maxCursorID) freeCursorList.remove(c_id);
 										}
 									} else freeCursorList.clear();
 								} else if (removeCursor.getCursorID()<maxCursorID) {
-									freeCursorList.addElement(removeCursor);
+									freeCursorList.add(removeCursor);
 								}
 								
 								break;
@@ -410,21 +411,21 @@ public class TuioClient implements OSCListener {
 
 								int c_id = cursorList.size();
 								if ((cursorList.size()<=maxCursorID) && (freeCursorList.size()>0)) {
-									TuioCursor closestCursor = freeCursorList.firstElement();
-									Enumeration<TuioCursor> testList = freeCursorList.elements();
-									while (testList.hasMoreElements()) {
-										TuioCursor testCursor = testList.nextElement();
+									Iterator<TuioCursor> it = freeCursorList.iterator();
+									TuioCursor closestCursor = it.next();
+									while (it.hasNext()) {
+										TuioCursor testCursor = it.next();
 										if (testCursor.getDistance(tcur)<closestCursor.getDistance(tcur)) closestCursor = testCursor;
 									}
 									c_id = closestCursor.getCursorID();
-									freeCursorList.removeElement(closestCursor);
+									freeCursorList.remove(closestCursor);
 								} else maxCursorID = c_id;		
 								
 								TuioCursor addCursor = new TuioCursor(currentTime,tcur.getSessionID(),c_id,tcur.getX(),tcur.getY());
 								cursorList.put(addCursor.getSessionID(),addCursor);
 								
 								for (int i=0;i<listenerList.size();i++) {
-									TuioListener listener = (TuioListener)listenerList.elementAt(i);
+									TuioListener listener = (TuioListener)listenerList.get(i);
 									if (listener!=null) listener.addTuioCursor(addCursor);
 								}
 								break;
@@ -438,18 +439,18 @@ public class TuioClient implements OSCListener {
 									updateCursor.update(currentTime,tcur.getX(),tcur.getY(),tcur.getXSpeed(),tcur.getYSpeed(),tcur.getMotionAccel());
 									
 								for (int i=0;i<listenerList.size();i++) {
-									TuioListener listener = (TuioListener)listenerList.elementAt(i);
+									TuioListener listener = (TuioListener)listenerList.get(i);
 									if (listener!=null) listener.updateTuioCursor(updateCursor);
 								}
 						}
 					}
 					
 					for (int i=0;i<listenerList.size();i++) {
-						TuioListener listener = (TuioListener)listenerList.elementAt(i);
+						TuioListener listener = (TuioListener)listenerList.get(i);
 						if (listener!=null) listener.refresh(new TuioTime(currentTime));
 					}
 					
-					Vector<Long> buffer = aliveCursorList;
+					List<Long> buffer = aliveCursorList;
 					aliveCursorList = newCursorList;
 					// recycling the vector
 					newCursorList = buffer;				
