@@ -19,19 +19,22 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-import java.awt.*;
-import java.util.*;
-import java.io.*;
-import javax.swing.*;
-
+import java.awt.Point;
 import java.io.File;
-import org.w3c.dom.Document;
-import org.w3c.dom.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.Hashtable;
+import java.util.StringTokenizer;
 
-import javax.xml.parsers.DocumentBuilderFactory;
+import javax.swing.JFrame;
 import javax.xml.parsers.DocumentBuilder;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException; 
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public class Manager {
 
@@ -66,11 +69,26 @@ public class Manager {
 
 	private void readConfig() {
 		Document doc = null;
+		
+		InputStream is = null;
+
+		// open config file
+		try {
+			is = new FileInputStream(new File(config_file));
+		} catch (FileNotFoundException e) {
+		}
+
+		// otherwise fallback to the default config file bundled with the jar
+		if (is == null) {
+			// FIXME can be null if config file is not in place
+			is = ClassLoader.getSystemClassLoader().getResourceAsStream("resources/config.xml");
+		}
+
 		try {
 			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-			doc = docBuilder.parse (new File(config_file));
-			
+			doc = docBuilder.parse (is);
+
 			String docType = doc.getDocumentElement().getNodeName();
 			if (!docType.equalsIgnoreCase("tuio")) {
 				System.out.println("error parsing configuration file");
