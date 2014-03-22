@@ -1,5 +1,7 @@
 package me.segabor.roundtable.main;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import me.segabor.roundtable.audiograph.data.Node;
@@ -9,6 +11,7 @@ import me.segabor.roundtable.ui.Surface;
 import processing.core.PApplet;
 import processing.core.PVector;
 import TUIO.TuioClient;
+import TUIO.TuioContainer;
 import TUIO.TuioCursor;
 import TUIO.TuioListener;
 import TUIO.TuioObject;
@@ -22,7 +25,8 @@ public class RTApp extends PApplet {
 	
 	private TuioClient tuioClient;
 	
-	
+	private Listener _Listener = new Listener();
+
 	/**
 	 * The center knob
 	 */
@@ -69,23 +73,70 @@ public class RTApp extends PApplet {
 	}
 
 
-
 	// ---- TUIO EVENTS ----
+	public static class EventResult {
+		public boolean reset;
+		public List<TuioContainer> events;
+	}
+
+	
 	class Listener implements TuioListener {
-		List<TuioContainer> x;
+		private long currentSession = -1L;
+		private boolean sessionReset = false;
+
+		private List<TuioContainer> events = new ArrayList<TuioContainer>();
+
+		/**
+		 * Event sink
+		 * @param ev
+		 */
+		private synchronized void processEvent(TuioContainer ev) {
+			final long l = ev.getSessionID();
+			
+			if (currentSession == -1L) {
+				// FIRST (NEW) SESSION
+				currentSession = l;
+			} else {
+				sessionReset = !(currentSession == l); 
+				if (sessionReset) {
+					// drop events collected so far
+					events.clear();
+				}
+				// record current id
+				currentSession = l;					
+			}
+			events.add(ev);
+		}
+
+
+		/**
+		 * The public event collection getter method
+		 * @return
+		 */
+		public synchronized EventResult getEvents() {
+			EventResult result = new EventResult();
+
+			// setup result set
+			result.reset = sessionReset;
+			result.events = Collections.unmodifiableList(events);
+
+			// clear in queue
+			events.clear();
+
+			return result;
+		}
+		
 		
 		@Override
 		public void addTuioCursor(TuioCursor cur) {
-			// TODO Auto-generated method stub
-			
+			processEvent(cur);
 		}
 
 
 
 		@Override
 		public void addTuioObject(TuioObject obj) {
-			// TODO Auto-generated method stub
-			
+			processEvent(obj);
 		}
 
 
@@ -93,40 +144,34 @@ public class RTApp extends PApplet {
 		@Override
 		public void refresh(TuioTime time) {
 			// TODO Auto-generated method stub
-			
 		}
 
 
 
 		@Override
 		public void removeTuioCursor(TuioCursor cur) {
-			// TODO Auto-generated method stub
-			
+			processEvent(cur);
 		}
 
 
 
 		@Override
 		public void removeTuioObject(TuioObject obj) {
-			// TODO Auto-generated method stub
-			
+			processEvent(obj);
 		}
 
 
 
 		@Override
 		public void updateTuioCursor(TuioCursor cur) {
-			// TODO Auto-generated method stub
-			
+			processEvent(cur);
 		}
 
 
 
 		@Override
 		public void updateTuioObject(TuioObject obj) {
-			// TODO Auto-generated method stub
-			
+			processEvent(obj);
 		}
 	}
-	Listener _Listener = new Listener();
 }
