@@ -25,7 +25,7 @@ public class RTApp extends PApplet {
 	
 	private TuioClient tuioClient;
 	
-	private Listener _Listener = new Listener();
+	private Listener _listener = new Listener();
 
 	/**
 	 * The center knob
@@ -54,13 +54,20 @@ public class RTApp extends PApplet {
 		
 		tuioClient.connect();
 		if (tuioClient.isConnected()) {
-			tuioClient.addTuioListener(_Listener);
+			tuioClient.addTuioListener(_listener);
 		} else {
 			// WHAT?
 			System.exit(1);
 		}
 	}
 	
+	
+	@Override
+	public void draw() {
+		_listener.getEvents();
+		
+		super.draw();
+	}
 
 	
 	/**
@@ -74,9 +81,10 @@ public class RTApp extends PApplet {
 
 
 	// ---- TUIO EVENTS ----
-	public static class EventResult {
+	public static class InputEvents {
 		public boolean reset;
-		public List<TuioContainer> events;
+		public List<TuioObject> objectEvents;
+		public List<TuioCursor> cursorEvents;
 	}
 
 	
@@ -84,13 +92,14 @@ public class RTApp extends PApplet {
 		private long currentSession = -1L;
 		private boolean sessionReset = false;
 
-		private List<TuioContainer> events = new ArrayList<TuioContainer>();
+		private List<TuioObject> objectEvents = new ArrayList<TuioObject>();
+		private List<TuioCursor> cursorEvents = new ArrayList<TuioCursor>();
 
 		/**
 		 * Event sink
 		 * @param ev
 		 */
-		private synchronized void processEvent(TuioContainer ev) {
+		private void processEvent(TuioContainer ev) {
 			final long l = ev.getSessionID();
 			
 			if (currentSession == -1L) {
@@ -100,12 +109,12 @@ public class RTApp extends PApplet {
 				sessionReset = !(currentSession == l); 
 				if (sessionReset) {
 					// drop events collected so far
-					events.clear();
+					objectEvents.clear();
+					cursorEvents.clear();
 				}
 				// record current id
 				currentSession = l;					
 			}
-			events.add(ev);
 		}
 
 
@@ -113,15 +122,17 @@ public class RTApp extends PApplet {
 		 * The public event collection getter method
 		 * @return
 		 */
-		public synchronized EventResult getEvents() {
-			EventResult result = new EventResult();
+		public synchronized InputEvents getEvents() {
+			InputEvents result = new InputEvents();
 
 			// setup result set
 			result.reset = sessionReset;
-			result.events = Collections.unmodifiableList(events);
+			result.objectEvents = Collections.unmodifiableList(objectEvents);
+			result.objectEvents = Collections.unmodifiableList(objectEvents);
 
 			// clear in queue
-			events.clear();
+			objectEvents.clear();
+			cursorEvents.clear();
 
 			return result;
 		}
@@ -129,14 +140,20 @@ public class RTApp extends PApplet {
 		
 		@Override
 		public void addTuioCursor(TuioCursor cur) {
-			processEvent(cur);
+			synchronized (this) {
+				processEvent(cur);
+				cursorEvents.add(cur);
+			}
 		}
 
 
 
 		@Override
 		public void addTuioObject(TuioObject obj) {
-			processEvent(obj);
+			synchronized (this) {
+				processEvent(obj);
+				objectEvents.add(obj);
+			}
 		}
 
 
@@ -150,28 +167,40 @@ public class RTApp extends PApplet {
 
 		@Override
 		public void removeTuioCursor(TuioCursor cur) {
-			processEvent(cur);
+			synchronized (this) {
+				processEvent(cur);
+				cursorEvents.add(cur);
+			}
 		}
 
 
 
 		@Override
 		public void removeTuioObject(TuioObject obj) {
-			processEvent(obj);
+			synchronized (this) {
+				processEvent(obj);
+				objectEvents.add(obj);
+			}
 		}
 
 
 
 		@Override
 		public void updateTuioCursor(TuioCursor cur) {
-			processEvent(cur);
+			synchronized (this) {
+				processEvent(cur);
+				cursorEvents.add(cur);
+			}
 		}
 
 
 
 		@Override
 		public void updateTuioObject(TuioObject obj) {
-			processEvent(obj);
+			synchronized (this) {
+				processEvent(obj);
+				objectEvents.add(obj);
+			}
 		}
 	}
 }
