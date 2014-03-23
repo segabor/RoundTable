@@ -64,11 +64,25 @@ public class RTApp extends PApplet {
 	
 	@Override
 	public void draw() {
-		_listener.getEvents();
+		handleInput();
+		
 		
 		super.draw();
 	}
 
+	
+	private void handleInput() {
+		InputEvents result = _listener.getEvents();
+		if (result.isEmpty() && !result.reset)
+			return;
+		
+		if (result.reset) {
+			// TODO reset global state
+		}
+		
+		
+	}
+	
 	
 	/**
 	 * The entry point
@@ -85,6 +99,10 @@ public class RTApp extends PApplet {
 		public boolean reset;
 		public List<TuioObject> objectEvents;
 		public List<TuioCursor> cursorEvents;
+		
+		public boolean isEmpty() {
+			return objectEvents.size() == 0 && cursorEvents.size() == 0;
+		}
 	}
 
 	
