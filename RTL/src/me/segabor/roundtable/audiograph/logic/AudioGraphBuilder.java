@@ -1,8 +1,10 @@
 package me.segabor.roundtable.audiograph.logic;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import me.segabor.roundtable.audiograph.data.AudioGraph;
 import me.segabor.roundtable.audiograph.data.DistanceMatrix;
 import me.segabor.roundtable.audiograph.data.Link;
 import me.segabor.roundtable.audiograph.data.Node;
@@ -99,6 +101,13 @@ public class AudioGraphBuilder {
 	}
 
 
+	public void build(AudioGraph ag) {
+		Set<Link> edges = new HashSet<Link>(ag.edges);
+		
+		buildAudioGraph(ag.dm, edges);
+		
+		ag.updateEdges(edges);
+	}
 
 
 	private static boolean canConnect(final int t_start, final int t_end) {
