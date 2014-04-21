@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import processing.core.PVector;
 
-public class DistanceMatrix {
+public class DistanceMatrix implements Dirty {
 	/**
 	 * Infinity value
 	 */
@@ -75,11 +75,25 @@ public class DistanceMatrix {
 		build(true);
 	}
 
-
+	/**
+	 * DM is dirty if the matrix itself is modified since last generation
+	 * or one of node is dirty.
+	 */
+	@Override
 	public boolean isDirty() {
-		return dirty;
+		if (dirty)
+			return true;
+		
+		// check nodes
+		for (Dirty n : nodes) {
+			if (n.isDirty())
+				return true;
+		}
+
+		return false;
 	}
-	
+
+	@Override
 	public void markDirty() {
 		this.dirty = true;
 	}
@@ -183,7 +197,16 @@ public class DistanceMatrix {
 
 			// ----------------- //
 
-			dirty = false;
+			// NOTE: this call does not cleanup nodes themselves
+			cleanup();
 		}
+	}
+
+
+	@Override
+	public boolean cleanup() {
+		final boolean flag = dirty;
+		dirty = false;
+		return flag;
 	}
 }

@@ -3,15 +3,14 @@ package me.segabor.roundtable.audiograph.data;
 import java.util.HashSet;
 import java.util.Set;
 
-public class AudioGraph {
+public class AudioGraph implements Dirty {
 	public Node root;
 	public Set<Node> nodes;
 	public Set<Link> edges;
 
 	// -- calculated fields --
 	public DistanceMatrix dm;
-	private long _hc;
-
+	
 	public AudioGraph(Node root, Set<Node> nodes) {
 		this.root = root;
 		this.nodes = nodes;
@@ -27,22 +26,25 @@ public class AudioGraph {
 			throw new NullPointerException("You shall not pass!");
 		}
 
+		// Build a new distance matrix 
 		if (dm == null) {
 			dm = new DistanceMatrix(root, nodes);
-			_hc = hashCode();
 			return;
 		}
 		
-		if (dm.isDirty() || _hc != hashCode()) {
+		// rebuild matrix if needed (lazy mode) 
+		if (isDirty()) {
 			dm.build();
-			_hc = hashCode();
+			
+			// Cleanup must be invoked at a subsequential step
 		}
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		// dirty status ?
 		result = prime * result + ((root == null) ? 0 : root.hashCode());
 		result = prime * result + ((nodes == null) ? 0 : nodes.hashCode());
 		result = prime * result + ((edges == null) ? 0 : edges.hashCode());
@@ -85,5 +87,57 @@ public class AudioGraph {
 	public void updateEdges(Set<Link> edges) {
 		// TODO elaborate this !
 		this.edges = edges;
+	}
+
+
+	// -- dirty state --
+	private boolean dirty = false;
+	
+	@Override
+	public boolean isDirty() {
+		if (dirty || ( dm!=null && dm.isDirty()) )
+			return true;
+
+		// Nodes are marked dirty by event handler
+		// Let's check them so
+		for (Dirty n : nodes) {
+			if (n.isDirty()) {
+				return true;
+			}
+		}
+
+		// check if an edge was changed (ie. link became hard)
+		for (Dirty e : edges) {
+			if (e.isDirty()) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
+
+	/**
+	 * Mark the graph dirty manually.
+	 * 
+	 * It should be invoked when a new node is added
+	 * or a no longer needed instance is removed from the graph
+	 */
+	@Override
+	public void markDirty() {
+		dirty = true;
+	}
+
+
+	/**
+	 * One shall never invoke this!
+	 */
+	@Override
+	public boolean cleanup() {
+		final boolean oldDirty = dirty;
+		if (dirty) {
+			dirty = false;
+		}
+		return oldDirty;
 	}	
 }

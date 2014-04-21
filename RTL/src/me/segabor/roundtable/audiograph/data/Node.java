@@ -3,7 +3,7 @@ package me.segabor.roundtable.audiograph.data;
 import processing.core.PVector;
 import TUIO.TuioObject;
 
-public class Node {
+public class Node implements Dirty {
 	/**
 	 * ID
 	 */
@@ -22,14 +22,15 @@ public class Node {
 	 */
 	private boolean disabled = false;
 	
-	
-	// recent TUIO event
-	TuioObject event;
-
 	/**
 	 * Two dimensional cartesian coordinates
 	 */
-	PVector coords;
+	private PVector coords;
+
+	/**
+	 * Rotation angle
+	 */
+	private float angle;
 
 	/**
 	 * @param key ID
@@ -98,18 +99,6 @@ public class Node {
 	}
 
 
-	/**
-	 * Set actual event
-	 * @param obj
-	 */
-	public void setEvent(TuioObject obj) {
-		this.event = obj;
-	}
-
-	public TuioObject getEvent() {
-		return this.event;
-	}
-
 	public PVector getCoords() {
 		return coords;
 	}
@@ -118,7 +107,14 @@ public class Node {
 		this.coords = coords;
 	}
 	
+	public float getAngle() {
+		return angle;
+	}
 	
+	public void setAngle(float angle) {
+		this.angle = angle;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder buf = new StringBuilder();
@@ -130,5 +126,45 @@ public class Node {
 		}
 		
 		return buf.toString();
+	}
+
+
+	/**
+	 * Apply state changes came with the TUIO event
+	 * @param obj TUIO event holder object
+	 */
+	public void setState(TuioObject obj) {
+		coords = new PVector(obj.getX(), obj.getY());
+		angle = obj.getAngle();
+	}
+
+
+	// -- dirty state --
+	
+	private boolean dirty = false;
+
+	@Override
+	public boolean isDirty() {
+		return dirty;
+	}
+
+
+	/**
+	 * Mark node dirty
+	 * Invoked by the event handler
+	 */
+	@Override
+	public void markDirty() {
+		dirty = true;
+	}
+
+
+	/**
+	 * Remove dirty state from this node
+	 */
+	@Override
+	public boolean cleanup() {
+		boolean flag = dirty; if (dirty) {dirty = false;}
+		return flag;
 	}
 }

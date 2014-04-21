@@ -4,7 +4,7 @@ package me.segabor.roundtable.audiograph.data;
  * @author segabor
  *
  */
-public class Link {
+public class Link implements Dirty {
 	Node in;
 	Node out;
 	int type = 0; // flow type: 0 = audio, 1 = control flow
@@ -76,5 +76,48 @@ public class Link {
 
 	public void setHidden(boolean f) {
 		hidden = f;
+	}
+
+	// -- dirty state --
+
+	private boolean dirty = false;
+	
+	@Override
+	public boolean isDirty() {
+		if (dirty)
+			return true;
+		
+		if (in != null && in.isDirty())
+			return true;
+		
+		if (out != null && out.isDirty())
+			return true;
+
+		return false;
+	}
+
+	/**
+	 * Mark this edge dirty.
+	 * Mostly invoked by the event handler
+	 * When an edge attribute was changed
+	 */
+	@Override
+	public void markDirty() {
+		this.dirty = true;
+	}
+
+	/**
+	 * Remove dirty state from the edge
+	 * Note this action does not affect the linked nodes!
+	 */
+	@Override
+	public boolean cleanup() {
+		final boolean oldState = dirty;
+
+		if (dirty) {
+			dirty = false;
+		}
+		
+		return oldState;
 	}
 }
