@@ -71,6 +71,14 @@ public class Node implements Dirty {
 	}
 
 	/**
+	 * Returns key
+	 * @return
+	 */
+	public NodeKey getKey() {
+		return key;
+	}
+	
+	/**
 	 * Return node type
 	 * @return
 	 */
