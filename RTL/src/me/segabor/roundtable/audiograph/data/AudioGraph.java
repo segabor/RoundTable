@@ -20,7 +20,9 @@ public class AudioGraph implements Dirty {
 		calculate();
 	}
 
-	
+	/**
+	 * Calculate distance matrix
+	 */
 	public void calculate() {
 		if (root == null || nodes == null) {
 			throw new NullPointerException("You shall not pass!");

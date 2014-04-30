@@ -12,6 +12,7 @@ import me.segabor.roundtable.audiograph.data.Link;
 import me.segabor.roundtable.audiograph.data.Node;
 import me.segabor.roundtable.audiograph.data.NodeFactory;
 import me.segabor.roundtable.audiograph.data.NodeKey;
+import me.segabor.roundtable.audiograph.data.NodeType;
 import me.segabor.roundtable.audiograph.logic.AudioGraphBuilder;
 import me.segabor.roundtable.ui.Surface;
 import processing.core.PApplet;
@@ -128,51 +129,42 @@ public class RTApp extends PApplet {
 		final float RW = surface.tableWidth;
 		final float RH = surface.tableHeight;
 		
-		n.getAngle();
-		
-		final int t = n.getType();
-		// final TuioObject obj = n.getEvent();
-
-		// draw rotated square
 		pushMatrix();
-
 		rectMode(CENTER);
 
-		// draw center node
-		if (t == 0) {
+		switch(n.getKey().getType()) {
+		case OUT:
+			// center node
 			translate(RW / 2, RH / 2);
 			fill(255, 255, 255);
 			ellipse(0, 0, 10, 10);
-		} else {
-			// 1. translate to its location
-			// translate(obj.getX() * RW, obj.getY() * RH);
+			break;
+		case GENERATOR:
+			// generator - SQUARE
 			translate(RW * n.getCoords().x, RH * n.getCoords().y);
-			
-			
-			// 2. make local transformations
-			switch(n.getKey().getType()) {
-			case GENERATOR:
-				// generator - SQUARE
-				rotate(n.getAngle());
-				rect(0, 0, 40, 40);
-				break;
-			case CONTROLLER:
-				// controller - CIRCLE
-				ellipse(0, 0, 40, 40);
-				break;
-			case EFFECT:
-				// effect - ROUNDED SQUARE
-				rotate(n.getAngle());
-				rect(0, 0, 40, 40, 5);
-				break;
-			case GLOBAL_CONTROLLER:
-				break;
-			default:
-				break;
-			}
+			rotate(n.getAngle());
+			rect(0, 0, 40, 40);
+			break;
+		case CONTROLLER:
+			// controller - CIRCLE
+			translate(RW * n.getCoords().x, RH * n.getCoords().y);
+			ellipse(0, 0, 40, 40);
+			break;
+		case EFFECT:
+			// effect - ROUNDED SQUARE
+			translate(RW * n.getCoords().x, RH * n.getCoords().y);
+			rotate(n.getAngle());
+			rect(0, 0, 40, 40, 5);
+			break;
+		case GLOBAL_CONTROLLER:
+			break;
+		default:
+			break;
 		}
+
 		popMatrix();
-	}	
+	}
+
 
 	private void handleInput() {
 		InputEvents result = _listener.getEvents();
@@ -221,9 +213,10 @@ public class RTApp extends PApplet {
 			LOGGER.fine("Graph got dirty, initiate recalculate");
 			LOGGER.finer("DC = " + dc);
 
-			// FIXME costy thing
+			// update distance matrix
 			ag.calculate();
-
+			// calculate edges
+			builder.build(ag);
 
 			// CLEANUP PHASE
 			{
