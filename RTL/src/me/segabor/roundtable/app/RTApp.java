@@ -12,8 +12,9 @@ import me.segabor.roundtable.audiograph.data.Link;
 import me.segabor.roundtable.audiograph.data.Node;
 import me.segabor.roundtable.audiograph.data.NodeFactory;
 import me.segabor.roundtable.audiograph.data.NodeKey;
-import me.segabor.roundtable.audiograph.data.NodeType;
 import me.segabor.roundtable.audiograph.logic.AudioGraphBuilder;
+import me.segabor.roundtable.ui.EdgeDrawer;
+import me.segabor.roundtable.ui.NodeDrawer;
 import me.segabor.roundtable.ui.Surface;
 import processing.core.PApplet;
 import processing.core.PVector;
@@ -88,81 +89,20 @@ public class RTApp extends PApplet {
 		background(51);
 
 		// L2. center node (FIXME: perhaps draw over edges?)
-		drawNode(globalOut);
+		NodeDrawer.draw(globalOut, this, surface);
 
 		// L3. audio graph - edges
 		// draw links
-		// DEBUG System.out.println("Will draw " + linx.size() + " lines...");
+		LOGGER.info("Will draw " + ag.edges.size() + " lines...");
 		for (Link l : ag.edges) {
-			// DRAW
-			// pushMatrix();
-
-			PVector p0 = l.getIn().getCoords(), p1 = l.getOut().getCoords();
-
-			stroke(255, 255, 255);
-			strokeWeight(1);
-			// System.out.println("Connect " + p0.x + ";" + p0.y + " with " +
-			// p1.x + ";" + p1.y);
-			line(p0.x, p0.y, p1.x, p1.y);
-
-			// arrow head
-			pushMatrix();
-			translate(p1.x, p1.y);
-			float a = atan2(p0.x - p1.x, p1.y - p0.y /* x1-x2, y2-y1 */);
-			rotate(a);
-			line(0, 0, -10, -20);
-			line(0, 0, 10, -20);
-			popMatrix();
-
-			// popMatrix();
+			EdgeDrawer.draw(l, this, surface);
 		}
 
 		// L4. audio graph - nodes
 		// draw nodes
 		for (Node n : ag.nodes) {
-			drawNode(n);
+			NodeDrawer.draw(n, this, surface);
 		}
-	}
-
-	
-	private void drawNode(Node n) {
-		final float RW = surface.tableWidth;
-		final float RH = surface.tableHeight;
-		
-		pushMatrix();
-		rectMode(CENTER);
-
-		switch(n.getKey().getType()) {
-		case OUT:
-			// center node
-			translate(RW / 2, RH / 2);
-			fill(255, 255, 255);
-			ellipse(0, 0, 10, 10);
-			break;
-		case GENERATOR:
-			// generator - SQUARE
-			translate(RW * n.getCoords().x, RH * n.getCoords().y);
-			rotate(n.getAngle());
-			rect(0, 0, 40, 40);
-			break;
-		case CONTROLLER:
-			// controller - CIRCLE
-			translate(RW * n.getCoords().x, RH * n.getCoords().y);
-			ellipse(0, 0, 40, 40);
-			break;
-		case EFFECT:
-			// effect - ROUNDED SQUARE
-			translate(RW * n.getCoords().x, RH * n.getCoords().y);
-			rotate(n.getAngle());
-			rect(0, 0, 40, 40, 5);
-			break;
-		case GLOBAL_CONTROLLER:
-			break;
-		default:
-			break;
-		}
-
-		popMatrix();
 	}
 
 
