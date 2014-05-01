@@ -28,18 +28,21 @@ public class AudioGraph implements Dirty {
 			throw new NullPointerException("You shall not pass!");
 		}
 
+		dm = new DistanceMatrix(root, nodes);
+
 		// Build a new distance matrix 
-		if (dm == null) {
+		/* if (dm == null) {
 			dm = new DistanceMatrix(root, nodes);
 			return;
 		}
-		
+
 		// rebuild matrix if needed (lazy mode) 
 		if (isDirty()) {
+			// NOTE dm should only be re-created when nodes were changed
+			// For sake of simplicity always use new DMs 
+			dm = new DistanceMatrix(root, nodes);
 			dm.build();
-			
-			// Cleanup must be invoked at a subsequential step
-		}
+		} */
 	}
 
 	@Override
@@ -97,7 +100,7 @@ public class AudioGraph implements Dirty {
 	
 	@Override
 	public boolean isDirty() {
-		if (dirty || ( dm!=null && dm.isDirty()) )
+		if (dirty /* || ( dm!=null && dm.isDirty())*/ )
 			return true;
 
 		// Nodes are marked dirty by event handler

@@ -118,7 +118,7 @@ public class DistanceMatrix implements Dirty {
 	
 	
 	private void build(boolean force) {
-		if (dirty || force) {
+		if (/* isDirty() || */ force) {
 			final int s = nodes.length;
 
 			Node n, n2;
