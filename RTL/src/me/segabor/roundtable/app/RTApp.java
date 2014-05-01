@@ -93,7 +93,7 @@ public class RTApp extends PApplet {
 
 		// L3. audio graph - edges
 		// draw links
-		LOGGER.info("Will draw " + ag.edges.size() + " lines...");
+		// LOGGER.info("Will draw " + ag.edges.size() + " lines...");
 		for (Link l : ag.edges) {
 			EdgeDrawer.draw(l, this, surface);
 		}
@@ -114,11 +114,12 @@ public class RTApp extends PApplet {
 		if (result.reset) {
 			// TODO reset global state
 			// reinitalize audio graph
-			LOGGER.info("Received reset event, re-create graph ");
+			LOGGER.fine("Received reset event, re-create graph ");
 			ag = new AudioGraph(globalOut, new HashSet<Node>());
 		}
 		
-		// -- manipulate node set here --
+
+		// Process object events, make changes to node set
 		Node n;
 		int dc = 0; // dirty counter
 		for (TuioObject obj : result.objectEvents) {
@@ -133,17 +134,17 @@ public class RTApp extends PApplet {
 				}
 				break;
 			case TuioContainer.TUIO_ADDED:
+			default:
 				// add node and fall through default case
 				if (ag.nodes.add(n)) {
 					LOGGER.finer(">> Add " + n.getKey());
 					// new node added --> mark graph dirty
 					ag.markDirty(); dc++;
+				} else {
+					LOGGER.finer(">> Modify " + n.getKey());
+					n.setState(obj);
+					n.markDirty();  dc++;// <-- mark the node itself dirty (node state changed)
 				}
-			default:
-				// Carry through state
-				LOGGER.finer(">> Modify " + n.getKey());
-				n.setState(obj);
-				n.markDirty();  dc++;// <-- mark the node itself dirty (node state changed)
 			}
 		}
 
@@ -153,12 +154,14 @@ public class RTApp extends PApplet {
 			LOGGER.fine("Graph got dirty, initiate recalculate");
 			LOGGER.finer("DC = " + dc);
 
-			// update distance matrix
+			// update distance matrix according to latest node changes
 			ag.calculate();
-			// calculate edges
+			// rebuild audio tree
+			//   practically, reconnect edges
 			builder.build(ag);
 
-			// CLEANUP PHASE
+
+			// Cleanup dirty objects
 			{
 				// cleanup children
 				for (Dirty d : ag.nodes) {
@@ -296,9 +299,6 @@ public class RTApp extends PApplet {
 			}
 
 			// clear in queue
-			objectEvents.clear();
-			cursorEvents.clear();
-
 			resetEvents = false;
 
 			return result;
@@ -308,7 +308,7 @@ public class RTApp extends PApplet {
 		@Override
 		public void addTuioCursor(TuioCursor cur) {
 			synchronized (this) {
-				processSessionId(cur);
+				// processSessionId(cur);
 				cursorEvents.add(cur);
 			}
 		}
@@ -318,7 +318,7 @@ public class RTApp extends PApplet {
 		@Override
 		public void addTuioObject(TuioObject obj) {
 			synchronized (this) {
-				processSessionId(obj);
+				// processSessionId(obj);
 				objectEvents.add(obj);
 			}
 		}
@@ -335,7 +335,7 @@ public class RTApp extends PApplet {
 		@Override
 		public void removeTuioCursor(TuioCursor cur) {
 			synchronized (this) {
-				resetSessionId(cur);
+				// resetSessionId(cur);
 				cursorEvents.add(cur);
 			}
 		}
@@ -345,7 +345,7 @@ public class RTApp extends PApplet {
 		@Override
 		public void removeTuioObject(TuioObject obj) {
 			synchronized (this) {
-				resetSessionId(obj);
+				// resetSessionId(obj);
 				objectEvents.add(obj);
 			}
 		}
@@ -355,7 +355,7 @@ public class RTApp extends PApplet {
 		@Override
 		public void updateTuioCursor(TuioCursor cur) {
 			synchronized (this) {
-				processSessionId(cur);
+				// processSessionId(cur);
 				cursorEvents.add(cur);
 			}
 		}
@@ -365,7 +365,7 @@ public class RTApp extends PApplet {
 		@Override
 		public void updateTuioObject(TuioObject obj) {
 			synchronized (this) {
-				processSessionId(obj);
+				// processSessionId(obj);
 				objectEvents.add(obj);
 			}
 		}
