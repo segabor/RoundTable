@@ -102,7 +102,7 @@ public class AudioGraphBuilder {
 
 
 	public void build(AudioGraph ag) {
-		Set<Link> edges = new HashSet<Link>(ag.edges);
+		Set<Link> edges = new HashSet<Link>(/*ag.edges*/);
 
 		// at this stage DM should exist and be complete
 		buildAudioGraph(ag.dm, edges);

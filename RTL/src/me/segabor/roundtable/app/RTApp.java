@@ -142,6 +142,10 @@ public class RTApp extends PApplet {
 				if (ag.nodes.remove(n)) {
 					// graph has been reduced --> mark graph dirty
 					ag.markDirty(); dc++;
+					
+					// when fiducial object gets removed from the surface
+					// remove the internal representation from the cache as well
+					NodeFactory.invalidate(n);
 				}
 				break;
 			case TuioContainer.TUIO_ADDED:
@@ -150,6 +154,7 @@ public class RTApp extends PApplet {
 				if (ag.nodes.add(n)) {
 					LOGGER.finer(">> Add " + n.getKey());
 					// new node added --> mark graph dirty
+					n.setState(obj);
 					ag.markDirty(); dc++;
 				} else {
 					LOGGER.finer(">> Modify " + n.getKey());

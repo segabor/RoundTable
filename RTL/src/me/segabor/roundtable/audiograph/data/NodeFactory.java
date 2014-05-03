@@ -68,4 +68,15 @@ public class NodeFactory {
 			nodeCache.clear();
 		}
 	}
+
+
+	/**
+	 * Invalidate node
+	 * @param n
+	 */
+	public static void invalidate(Node n) {
+		synchronized (nodeCache) {
+			nodeCache.remove(n.getKey());
+		}
+	}
 }
