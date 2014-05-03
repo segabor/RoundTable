@@ -2,6 +2,8 @@ package me.segabor.roundtable.ui;
 
 import java.io.Serializable;
 
+import processing.core.PVector;
+
 /**
  * A POJO 
  * @author segabor
@@ -28,5 +30,28 @@ public class Surface implements Serializable {
 		this.tableRadius = tableDiameter / 2;
 		this.halfWidth = tableWidth / 2;
 		this.halfHeight = tableHeight / 2;
+	}
+
+	/**
+	 * Transform internal coordinates to surface space
+	 * Practically, scale them up [0,1] to [0,tableW/H]
+	 * 
+	 * @param p vector
+	 * @return array of upscaled coordinates
+	 */
+	public float[] transform(PVector p) {
+		return new float[] { tableWidth*p.x, tableHeight*p.y};
+	}
+
+	/**
+	 * Transform pair of internal coordinates to surface space
+	 * Practically, scale them up [0,1] to [0,tableW/H]
+	 * 
+	 * @param p0 first vector
+	 * @param p1 second vector
+	 * @return array of upscaled coordinates
+	 */
+	public float[] transform2(PVector p0, PVector p1) {
+		return new float[] { tableWidth*p0.x, tableHeight*p0.y, tableWidth*p1.x, tableHeight*p1.y};
 	}
 }

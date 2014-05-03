@@ -111,6 +111,12 @@ public class Node implements Dirty {
 		return coords;
 	}
 
+	/**
+	 * Coordinates of the node
+	 * 
+	 * Allowed range: [0,0]->[1,1]
+	 * @param coords
+	 */
 	public void setCoords(PVector coords) {
 		this.coords = coords;
 	}

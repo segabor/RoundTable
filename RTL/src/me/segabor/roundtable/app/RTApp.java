@@ -55,7 +55,7 @@ public class RTApp extends PApplet {
 		
 		globalOut = new Node(NodeKey.NKEY_ORIGO);
 		globalOut.setLabel("O");
-		globalOut.setCoords(new PVector(surface.halfWidth, surface.halfHeight));
+		globalOut.setCoords(new PVector(0.5f, 0.5f));
 
 		// FIXME this is ugly!
 		ag = new AudioGraph(globalOut, new HashSet<Node>());

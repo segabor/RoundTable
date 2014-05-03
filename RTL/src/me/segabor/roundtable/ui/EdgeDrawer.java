@@ -9,13 +9,17 @@ public class EdgeDrawer {
 		PVector p0 = l.getIn().getCoords(),
 				p1 = l.getOut().getCoords();
 
+
+		float t[] = surface.transform2(p0, p1);
+		
 		ctx.stroke(255, 255, 255);
 		ctx.strokeWeight(1);
-		ctx.line(p0.x, p0.y, p1.x, p1.y);
+		ctx.line(t[0], t[1], t[2], t[3]);
 
 		// arrow head
 		ctx.pushMatrix();
-		ctx.translate(p1.x, p1.y);
+		ctx.translate(t[2], t[3]);
+		// TODO CHECK if still works
 		float a = PApplet.atan2(p0.x - p1.x, p1.y - p0.y /* x1-x2, y2-y1 */);
 		ctx.rotate(a);
 		ctx.line(0, 0, -10, -20);
