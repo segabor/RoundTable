@@ -13,6 +13,7 @@ import me.segabor.roundtable.audiograph.data.Node;
 import me.segabor.roundtable.audiograph.data.NodeFactory;
 import me.segabor.roundtable.audiograph.data.NodeKey;
 import me.segabor.roundtable.audiograph.logic.AudioGraphBuilder;
+import me.segabor.roundtable.ui.DrawContext;
 import me.segabor.roundtable.ui.EdgeDrawer;
 import me.segabor.roundtable.ui.NodeDrawer;
 import me.segabor.roundtable.ui.Surface;
@@ -65,6 +66,15 @@ public class RTApp extends PApplet {
 		// set table top
 		size((int) surface.tableWidth, (int) surface.tableHeight);
 
+		DrawContext dctx = new DrawContext();
+		dctx.gfx = this;
+		dctx.surface = surface;
+		
+		NodeDrawer.initContext(dctx);
+		EdgeDrawer.initContext(dctx);
+
+		
+
 		// set TUIO events
 		tuioClient = new TuioClient();
 		
@@ -82,26 +92,27 @@ public class RTApp extends PApplet {
 	public void draw() {
 		// handle input events
 		handleInput();
-		
-		// draw nodes
+
+		// the real draw phase
 		
 		// L1. background
 		background(51);
 
 		// L2. center node (FIXME: perhaps draw over edges?)
-		NodeDrawer.draw(globalOut, this, surface);
+		NodeDrawer.draw(globalOut);
 
 		// L3. audio graph - edges
 		// draw links
-		// LOGGER.info("Will draw " + ag.edges.size() + " lines...");
 		for (Link l : ag.edges) {
-			EdgeDrawer.draw(l, this, surface);
+			LOGGER.finer("Draw edge " + l);
+			EdgeDrawer.draw(l);
 		}
 
 		// L4. audio graph - nodes
 		// draw nodes
 		for (Node n : ag.nodes) {
-			NodeDrawer.draw(n, this, surface);
+			LOGGER.finer("Draw node " + n);
+			NodeDrawer.draw(n);
 		}
 	}
 
