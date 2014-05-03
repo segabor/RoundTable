@@ -127,11 +127,25 @@ public class Node implements Dirty {
 	public String toString() {
 		StringBuilder buf = new StringBuilder();
 		
+		buf.append("<");
+		
 		if (label != null)
 			buf.append(label);
 		else {
-			buf.append("<").append(key).append(">");
+			buf.append(key);
 		}
+		
+		if (coords != null) {
+			buf.append(" ")
+				.append("[")
+				.append( String.format("%.2f", coords.x) )
+				.append(";")
+				.append( String.format("%.2f", coords.y) )
+				.append("]")
+			;
+		}
+
+		buf.append(">");
 		
 		return buf.toString();
 	}

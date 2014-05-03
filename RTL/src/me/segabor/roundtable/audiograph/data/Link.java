@@ -120,4 +120,23 @@ public class Link implements Dirty {
 		
 		return oldState;
 	}
+	
+	@Override
+	public String toString() {
+		StringBuilder buf = new StringBuilder();
+		
+		if (in != null) {
+			buf.append(in.toString());
+		} else {
+			buf.append("<NIL>");
+		}
+		buf.append(" ==|> ");
+		if (out != null) {
+			buf.append(out.toString());
+		} else {
+			buf.append("<NIL>");
+		}
+
+		return buf.toString();
+	}
 }
