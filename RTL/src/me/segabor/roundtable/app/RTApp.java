@@ -255,6 +255,7 @@ public class RTApp extends PApplet {
 		 * Event sink
 		 * @param ev
 		 */
+		@SuppressWarnings("unused")
 		private void processSessionId(TuioContainer ev) {
 			// Session ID is a unique id starting from zero
 			final int sessId = (int) ev.getSessionID();
@@ -264,7 +265,7 @@ public class RTApp extends PApplet {
 			if (ev instanceof TuioObject) {
 				symId = ((TuioObject) ev).getSymbolID();
 			} else {
-				symId = 65535; // fake ID - must be bigger than any Symbol IDs
+				symId = 65535; // fake ID - must be higher than any Symbol ID
 			}
 
 			if (sessId >= MAX_IDS) {
@@ -292,6 +293,7 @@ public class RTApp extends PApplet {
 			}
 		}
 
+		@SuppressWarnings("unused")
 		private void resetSessionId(TuioContainer ev) {
 			// Session ID is a unique id starting from zero
 			final int sessId = (int) ev.getSessionID();
