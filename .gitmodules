@@ -1,3 +1,6 @@
 [submodule "JavaOSC"]
 	path = JavaOSC
 	url = git://github.com/hoijui/JavaOSC.git
+[submodule "processing"]
+	path = processing
+	url = git://github.com/processing/processing.git
