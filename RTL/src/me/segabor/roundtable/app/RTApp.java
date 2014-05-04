@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import me.segabor.roundtable.audiograph.data.AudioGraph;
@@ -32,10 +33,11 @@ public class RTApp extends PApplet {
 
 	private final static Logger LOGGER = Logger.getLogger(RTApp.class.getName());
 
-	private Surface surface;
-	
 	private TuioClient tuioClient;
-	
+
+	/**
+	 * TUIO listeners
+	 */
 	private Listener _listener = new Listener();
 
 	/**
@@ -49,42 +51,48 @@ public class RTApp extends PApplet {
 	
 	@Override
 	public void setup() {
-		// core setup
-		surface = new Surface(800, 600);
-
-		// -- initialize global state --
-		
-		globalOut = new Node(NodeKey.NKEY_ORIGO);
-		globalOut.setLabel("O");
-		globalOut.setCoords(new PVector(0.5f, 0.5f));
-
-		// FIXME this is ugly!
-		ag = new AudioGraph(globalOut, new HashSet<Node>());
-
-
-
-		// set table top
-		size((int) surface.tableWidth, (int) surface.tableHeight);
-
-		DrawContext dctx = new DrawContext();
-		dctx.gfx = this;
-		dctx.surface = surface;
-		
-		NodeDrawer.initContext(dctx);
-		EdgeDrawer.initContext(dctx);
-
-		
-
-		// set TUIO events
-		tuioClient = new TuioClient();
-		
-		tuioClient.connect();
-		if (tuioClient.isConnected()) {
-			tuioClient.addTuioListener(_listener);
-		} else {
-			// WHAT?
-			System.exit(1);
+		// Setup models / audio graph
+		LOGGER.fine("[INIT#1] Setup models / audio graph");
+		{
+			globalOut = new Node(NodeKey.NKEY_ORIGO);
+			globalOut.setLabel("O");
+			globalOut.setCoords(new PVector(0.5f, 0.5f));
+	
+			// FIXME this is ugly!
+			ag = new AudioGraph(globalOut, new HashSet<Node>());
 		}
+
+
+		// Setup draw context
+		LOGGER.fine("[INIT#2] Setup draw context");
+		{
+			DrawContext dctx = new DrawContext();
+	
+			Surface surface = new Surface(800, 600);
+			size((int) surface.tableWidth, (int) surface.tableHeight);
+			dctx.gfx = this;
+			dctx.surface = surface;
+			
+			NodeDrawer.initContext(dctx);
+			EdgeDrawer.initContext(dctx);
+		}
+		
+
+		// Setup TUIO listener
+		LOGGER.fine("[INIT#3] Setup TUIO listener");
+		{
+			tuioClient = new TuioClient();
+			
+			tuioClient.connect();
+			if (tuioClient.isConnected()) {
+				tuioClient.addTuioListener(_listener);
+			} else {
+				LOGGER.log(Level.SEVERE, "Failed to kick off TUIO listeren, aborting!");
+				System.exit(1);
+			}
+		}
+		
+		LOGGER.fine("[INIT] Initialization finished.");
 	}
 	
 	
