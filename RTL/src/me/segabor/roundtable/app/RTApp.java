@@ -49,6 +49,8 @@ public class RTApp extends PApplet {
 
 	AudioGraph ag;
 	
+	DrawContext dctx;
+	
 	@Override
 	public void setup() {
 		// Setup models / audio graph
@@ -66,12 +68,15 @@ public class RTApp extends PApplet {
 		// Setup draw context
 		LOGGER.fine("[INIT#2] Setup draw context");
 		{
-			DrawContext dctx = new DrawContext();
+			dctx = new DrawContext();
 	
 			Surface surface = new Surface(800, 600);
 			size((int) surface.tableWidth, (int) surface.tableHeight);
 			dctx.gfx = this;
 			dctx.surface = surface;
+			
+			// timing
+			dctx.tick = new Tick( System.currentTimeMillis(), 120, 4 );
 			
 			NodeDrawer.initContext(dctx);
 			EdgeDrawer.initContext(dctx);
@@ -98,6 +103,12 @@ public class RTApp extends PApplet {
 	
 	@Override
 	public void draw() {
+		// tick .. tick .. tick
+        // Update current time frame
+		dctx.lastTick = dctx.tick.copyTo(dctx.lastTick);
+		dctx.tick.update();
+
+		
 		// handle input events
 		handleInput();
 
