@@ -18,6 +18,7 @@ import me.segabor.roundtable.ui.DrawContext;
 import me.segabor.roundtable.ui.EdgeDrawer;
 import me.segabor.roundtable.ui.NodeDrawer;
 import me.segabor.roundtable.ui.Surface;
+import me.segabor.roundtable.ui.TableTopDrawer;
 import processing.core.PApplet;
 import processing.core.PVector;
 import TUIO.TuioClient;
@@ -77,7 +78,9 @@ public class RTApp extends PApplet {
 			
 			// timing
 			dctx.tick = new Tick( System.currentTimeMillis(), 120, 4 );
-			
+
+			// init drawer modules
+			TableTopDrawer.initContext(dctx);
 			NodeDrawer.initContext(dctx);
 			EdgeDrawer.initContext(dctx);
 		}
@@ -115,8 +118,9 @@ public class RTApp extends PApplet {
 		// the real draw phase
 		
 		// L1. background
-		background(51);
-
+		// background(51);
+		TableTopDrawer.draw();
+		
 		// L2. center node (FIXME: perhaps draw over edges?)
 		NodeDrawer.draw(globalOut);
 
