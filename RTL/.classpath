@@ -5,6 +5,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/processing-core"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/TUIO_JAVA"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/javaosc-core"/>
 	<classpathentry kind="output" path="resources/code"/>
 </classpath>
