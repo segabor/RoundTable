@@ -22,7 +22,6 @@ import me.segabor.roundtable.ui.TableTopDrawer;
 import processing.core.PApplet;
 import processing.core.PVector;
 import TUIO.TuioClient;
-import TUIO.TuioContainer;
 import TUIO.TuioCursor;
 import TUIO.TuioListener;
 import TUIO.TuioObject;
@@ -159,7 +158,7 @@ public class RTApp extends PApplet {
 		for (TuioObject obj : result.objectEvents) {
 			n = NodeFactory.getNode(obj);
 			switch(obj.getTuioState()) {
-			case TuioContainer.TUIO_REMOVED:
+			case TuioObject.TUIO_REMOVED:
 				// Remove object
 				LOGGER.finer(">> Remove " + n.getKey());
 				if (ag.nodes.remove(n)) {
@@ -171,7 +170,7 @@ public class RTApp extends PApplet {
 					NodeFactory.invalidate(n);
 				}
 				break;
-			case TuioContainer.TUIO_ADDED:
+			case TuioObject.TUIO_ADDED:
 			default:
 				// add node and fall through default case
 				if (ag.nodes.add(n)) {
@@ -271,17 +270,13 @@ public class RTApp extends PApplet {
 		 * @param ev
 		 */
 		@SuppressWarnings("unused")
-		private void processSessionId(TuioContainer ev) {
+		private void processSessionId(TuioObject ev) {
 			// Session ID is a unique id starting from zero
 			final int sessId = (int) ev.getSessionID();
 			// Symbol ID determines a Fiducial ID (fingers do not have symbol IDs)
 			final int symId;
 			
-			if (ev instanceof TuioObject) {
-				symId = ((TuioObject) ev).getSymbolID();
-			} else {
-				symId = 65535; // fake ID - must be higher than any Symbol ID
-			}
+			symId = ev.getSymbolID();
 
 			if (sessId >= MAX_IDS) {
 				// TBD: session ID ran out of our limited range, don't care
@@ -309,7 +304,7 @@ public class RTApp extends PApplet {
 		}
 
 		@SuppressWarnings("unused")
-		private void resetSessionId(TuioContainer ev) {
+		private void resetSessionId(TuioObject ev) {
 			// Session ID is a unique id starting from zero
 			final int sessId = (int) ev.getSessionID();
 
