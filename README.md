@@ -15,9 +15,14 @@ I'm currently focusing on the visualization part (object details, editor panel, 
 The final goal is to run RoundTable on cheap hardware, possibly a multi-core ARM board. Ideally, audio and visual parts would run on different boards so design will follow this idea.
 
 ## How can I try it out
-Actually it can be run from [Eclipse](http://eclipse.org), no binary is available yet for download. Clone the source to your desktop and import the projects into Eclipse. Other things you will need:
+Actually it can be run from [Eclipse](http://eclipse.org), no binary is available yet for download. Clone the source code, open up Eclipse and import projects into a new workspace by following steps below
 
-* [TUIO_JAVA](http://www.tuio.org/?software) - Download the source, create a TUIO_JAVA project in Eclipse and import the source into that.
+*  Import **JavaOSC** module as an existing Maven project into Eclipse. You'll see three new projects appeared in the Project Explorer (JavaOSC, javaosc-core and javaosc-ui).
+*  Import **processing-core** project from _processing_ folder (Import existing project into Workspace). We only need this project from the collection.
+*  Now import the main project **RTL**
+
+## Other softwares you might consider
+
 * [reacTIVision](http://reactivision.sourceforge.net/) - This piece of software will do the real fiducial detection and send TUIO events towards RoundTable.
 * [TuioSimulator](http://prdownloads.sourceforge.net/reactivision/TUIO_Simulator-1.4.zip?download) - You will really need this if you don't have your own tangible tabletop yet.
 
@@ -29,4 +34,3 @@ Cheers,
 
 Gábor SEBESTYÉN
 Twitter: @segabor
-
