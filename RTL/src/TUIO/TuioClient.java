@@ -20,8 +20,14 @@
 */
 package TUIO;
 
-import com.illposed.osc.*;
-import java.util.*;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
+
+import com.illposed.osc.OSCListener;
+import com.illposed.osc.OSCMessage;
+import com.illposed.osc.OSCPortIn;
 
 /**
  * The TuioClient class is the central TUIO protocol decoder component. It provides a simple callback infrastructure using the {@link TuioListener} interface.
@@ -184,7 +190,7 @@ public class TuioClient implements OSCListener {
 	 */
 	public void acceptMessage(Date date, OSCMessage message) {
 	
-		Object[] args = message.getArguments();
+		Object[] args = message.getArguments().toArray();
 		String command = (String)args[0];
 		String address = message.getAddress();
 
