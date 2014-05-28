@@ -46,7 +46,7 @@ public class NodeFactory {
 		synchronized (nodeCache) {
 			if (!nodeCache.keySet().contains(key)) {
 				// create a new node
-				node = new Node(key);
+				node = new Node(key, key.getType());
 				
 				nodeCache.put(key, node);
 			} else {

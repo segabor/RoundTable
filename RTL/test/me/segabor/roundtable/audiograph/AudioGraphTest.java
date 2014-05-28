@@ -31,7 +31,7 @@ public class AudioGraphTest {
 	@Before
 	public void init() {
 		
-		globalOut = new Node(NodeKey.NKEY_ORIGO);
+		globalOut = new Node(NodeKey.NKEY_ORIGO, NodeType.OUT);
 		globalOut.setLabel("O");
 		globalOut.setCoords(ORIGO);
 
@@ -50,7 +50,7 @@ public class AudioGraphTest {
 		// Generator
 		{
 			nodes.clear();
-			n = new Node(new NodeKey(NodeType.GENERATOR, 1l));
+			n = new Node(new NodeKey(NodeType.GENERATOR, 1l), NodeType.GENERATOR);
 			n.setLabel("Generator");
 			n.setCoords(new PVector(10,0));
 			
@@ -65,7 +65,7 @@ public class AudioGraphTest {
 		// Effect
 		{
 			nodes.clear();
-			n = new Node(new NodeKey(NodeType.EFFECT, 1l));
+			n = new Node(new NodeKey(NodeType.EFFECT, 1l), NodeType.EFFECT);
 			n.setLabel("Effect");
 			n.setCoords(new PVector(10,0));
 			
@@ -81,7 +81,7 @@ public class AudioGraphTest {
 		// Controller
 		{
 			nodes.clear();
-			n = new Node(new NodeKey(NodeType.CONTROLLER, 1l));
+			n = new Node(new NodeKey(NodeType.CONTROLLER, 1l), NodeType.CONTROLLER);
 			n.setLabel("Controller");
 			n.setCoords(new PVector(10,0));
 			
@@ -94,7 +94,7 @@ public class AudioGraphTest {
 		// Global Controller
 		{
 			nodes.clear();
-			n = new Node(new NodeKey(NodeType.GLOBAL_CONTROLLER, 1l));
+			n = new Node(new NodeKey(NodeType.GLOBAL_CONTROLLER, 1l), NodeType.GLOBAL_CONTROLLER);
 			n.setLabel("GlobalController");
 			n.setCoords(new PVector(10,0));
 			
@@ -118,7 +118,7 @@ public class AudioGraphTest {
 		// Generator
 		{
 			nodes.clear();
-			n = new Node(new NodeKey(NodeType.GENERATOR, 1l));
+			n = new Node(new NodeKey(NodeType.GENERATOR, 1l), NodeType.GENERATOR);
 			n.setLabel("Generator");
 			n.setCoords(new PVector(10,0));
 			n.setDisabled(true);
@@ -132,7 +132,7 @@ public class AudioGraphTest {
 		// Effect
 		{
 			nodes.clear();
-			n = new Node(new NodeKey(NodeType.EFFECT, 1l));
+			n = new Node(new NodeKey(NodeType.EFFECT, 1l), NodeType.EFFECT);
 			n.setLabel("Effect");
 			n.setCoords(new PVector(10,0));
 			n.setDisabled(true);
@@ -147,7 +147,7 @@ public class AudioGraphTest {
 		// Controller
 		{
 			nodes.clear();
-			n = new Node(new NodeKey(NodeType.CONTROLLER, 1l));
+			n = new Node(new NodeKey(NodeType.CONTROLLER, 1l), NodeType.CONTROLLER);
 			n.setLabel("Controller");
 			n.setCoords(new PVector(10,0));
 			n.setDisabled(true);
@@ -161,7 +161,7 @@ public class AudioGraphTest {
 		// Global Controller
 		{
 			nodes.clear();
-			n = new Node(new NodeKey(NodeType.GLOBAL_CONTROLLER, 1l));
+			n = new Node(new NodeKey(NodeType.GLOBAL_CONTROLLER, 1l), NodeType.GLOBAL_CONTROLLER);
 			n.setLabel("GlobalController");
 			n.setCoords(new PVector(10,0));
 			n.setDisabled(true);
@@ -179,23 +179,23 @@ public class AudioGraphTest {
 		int k = 1;
 		
 		// generators
-		final Node g1 = new Node(new NodeKey(NodeType.GENERATOR, (long) k++)); g1.setLabel("G1");
+		final Node g1 = new Node(new NodeKey(NodeType.GENERATOR, (long) k++), NodeType.GENERATOR); g1.setLabel("G1");
 		g1.setCoords(new PVector(5, -1));
-		final Node g2 = new Node(new NodeKey(NodeType.GENERATOR, (long) k++)); g2.setLabel("G2");
+		final Node g2 = new Node(new NodeKey(NodeType.GENERATOR, (long) k++), NodeType.GENERATOR); g2.setLabel("G2");
 		g2.setCoords(new PVector(-2.5f, -2.5f));
-		final Node g3 = new Node(new NodeKey(NodeType.GENERATOR, (long) k++)); g3.setLabel("G3");
+		final Node g3 = new Node(new NodeKey(NodeType.GENERATOR, (long) k++), NodeType.GENERATOR); g3.setLabel("G3");
 		g3.setCoords(new PVector(-3, 0));
 		
 		// effects
-		final Node e1 = new Node(new NodeKey(NodeType.EFFECT, (long) k++)); e1.setLabel("E1");
+		final Node e1 = new Node(new NodeKey(NodeType.EFFECT, (long) k++), NodeType.EFFECT); e1.setLabel("E1");
 		e1.setCoords(new PVector(0, 1.5f));
-		final Node e2 = new Node(new NodeKey(NodeType.EFFECT, (long) k++)); e2.setLabel("E2");
+		final Node e2 = new Node(new NodeKey(NodeType.EFFECT, (long) k++), NodeType.EFFECT); e2.setLabel("E2");
 		e2.setCoords(new PVector(1.5f, -1));
-		final Node e3 = new Node(new NodeKey(NodeType.EFFECT, (long) k++)); e3.setLabel("E3");
+		final Node e3 = new Node(new NodeKey(NodeType.EFFECT, (long) k++), NodeType.EFFECT); e3.setLabel("E3");
 		e3.setCoords(new PVector(3, 0));
 
 		// controllers
-		final Node c1 = new Node(new NodeKey(NodeType.CONTROLLER, (long) k++)); c1.setLabel("C1");
+		final Node c1 = new Node(new NodeKey(NodeType.CONTROLLER, (long) k++), NodeType.CONTROLLER); c1.setLabel("C1");
 		c1.setCoords(new PVector(1, 3));
 
 		List<Node> nodes = new ArrayList<Node>(7);

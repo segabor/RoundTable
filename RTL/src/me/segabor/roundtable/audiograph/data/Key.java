@@ -14,6 +14,7 @@ public abstract class Key<T extends Comparable<T>, V extends Comparable<V>>{
 		return id;
 	}
 
+	@Deprecated
 	public final T getType() {
 		return type;
 	}

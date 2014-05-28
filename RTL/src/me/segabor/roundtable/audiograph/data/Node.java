@@ -8,6 +8,8 @@ public class Node implements Dirty {
 	 * ID
 	 */
 	private NodeKey key;
+	
+	private NodeType type;
 
 	/**
 	 * Node label (optional)
@@ -36,10 +38,15 @@ public class Node implements Dirty {
 	 * @param key ID
 	 * @param type {@see NODE_TYPE values}
 	 */
+	@Deprecated
 	public Node(NodeKey key) {
-		this.key = key;
+		this(key, key.getType());
 	}
 
+	public Node(NodeKey key, NodeType type) {
+		this.key = key;
+		this.type = type;
+	}
 
 
 	@Override
@@ -83,7 +90,11 @@ public class Node implements Dirty {
 	 * @return
 	 */
 	public int getType() {
-		return key.getType().ordinal();
+		return type.ordinal();
+	}
+
+	public NodeType getNodeType() {
+		return type;
 	}
 
 	public void setLabel(String label) {

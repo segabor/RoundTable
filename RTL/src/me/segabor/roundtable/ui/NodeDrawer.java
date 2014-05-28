@@ -16,7 +16,7 @@ public class NodeDrawer {
 
 		final float[] t = ctx.surface.transform(n.getCoords());
 
-		switch(n.getKey().getType()) {
+		switch(n.getNodeType()) {
 		case OUT:
 			// center node
 			ctx.gfx.translate(t[0], t[1]);
