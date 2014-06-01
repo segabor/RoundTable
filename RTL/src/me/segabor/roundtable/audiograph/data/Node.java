@@ -88,7 +88,7 @@ public class Node implements Dirty {
 		return key;
 	}
 	
-	public NodeType getNodeType() {
+	public NodeType getType() {
 		return type;
 	}
 

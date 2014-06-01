@@ -85,8 +85,8 @@ public class AudioGraphBuilder {
 				LOGGER.fine("Link(" + edges.size() + ") " + n + " -> " + m);
 
 				Link li = new Link(0, n, m); // TODO: type: 0: AR, 1: CR
-				if (n.getNodeType().ordinal() == NodeType.GLOBAL_CONTROLLER.ordinal()
-						&& m.getNodeType().ordinal() == NodeType.OUT.ordinal()) {
+				if (n.getType().ordinal() == NodeType.GLOBAL_CONTROLLER.ordinal()
+						&& m.getType().ordinal() == NodeType.OUT.ordinal()) {
 					li.setHidden(true);
 				}
 				edges.add(li);
