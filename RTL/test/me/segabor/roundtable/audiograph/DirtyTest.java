@@ -18,7 +18,7 @@ public class DirtyTest {
 	public void testBasic() {
 		// check node
 		{
-			Node n = new Node(TEST1);
+			Node n = new Node(TEST1, NodeType.OUT);
 			
 			assertFalse(n.isDirty());
 			n.markDirty();
@@ -29,8 +29,8 @@ public class DirtyTest {
 		
 		// check edge
 		{
-			Node n1 = new Node(TEST1);
-			Node n2 = new Node(TEST2);
+			Node n1 = new Node(TEST1, NodeType.OUT);
+			Node n2 = new Node(TEST2, NodeType.OUT);
 			Link edge = new Link(0, n1, n2);
 			
 			assertFalse(n1.isDirty());

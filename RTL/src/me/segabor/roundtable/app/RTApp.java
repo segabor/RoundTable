@@ -13,6 +13,7 @@ import me.segabor.roundtable.audiograph.data.Link;
 import me.segabor.roundtable.audiograph.data.Node;
 import me.segabor.roundtable.audiograph.data.NodeFactory;
 import me.segabor.roundtable.audiograph.data.NodeKey;
+import me.segabor.roundtable.audiograph.data.NodeType;
 import me.segabor.roundtable.audiograph.logic.AudioGraphBuilder;
 import me.segabor.roundtable.ui.DrawContext;
 import me.segabor.roundtable.ui.EdgeDrawer;
@@ -56,7 +57,7 @@ public class RTApp extends PApplet {
 		// Setup models / audio graph
 		LOGGER.fine("[INIT#1] Setup models / audio graph");
 		{
-			globalOut = new Node(NodeKey.NKEY_ORIGO);
+			globalOut = new Node(NodeKey.NKEY_ORIGO, NodeType.OUT);
 			globalOut.setLabel("O");
 			globalOut.setCoords(new PVector(0.5f, 0.5f));
 	

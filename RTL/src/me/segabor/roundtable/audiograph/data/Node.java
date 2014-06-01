@@ -10,6 +10,8 @@ public class Node implements Dirty {
 	private NodeKey key;
 	
 	private NodeType type;
+	private NodeSubtype subType;
+
 
 	/**
 	 * Node label (optional)
@@ -34,19 +36,16 @@ public class Node implements Dirty {
 	 */
 	private float angle;
 
-	/**
-	 * @param key ID
-	 * @param type {@see NODE_TYPE values}
-	 */
-	@Deprecated
-	public Node(NodeKey key) {
-		this(key, key.getType());
+	public Node(NodeKey key, NodeType type) {
+		this(key, type, NodeSubtype.UNKNOWN);
 	}
 
-	public Node(NodeKey key, NodeType type) {
+	public Node(NodeKey key, NodeType type, NodeSubtype subType) {
 		this.key = key;
 		this.type = type;
+		this.subType = subType;
 	}
+
 
 
 	@Override
@@ -90,6 +89,10 @@ public class Node implements Dirty {
 	
 	public NodeType getType() {
 		return type;
+	}
+
+	public NodeSubtype getSubType() {
+		return subType;
 	}
 
 	public void setLabel(String label) {
