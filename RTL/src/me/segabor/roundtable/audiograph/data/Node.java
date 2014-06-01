@@ -54,7 +54,8 @@ public class Node implements Dirty {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((key == null) ? 0 : key.hashCode());
-		result = prime * result + (disabled ? 0 : 1);
+		result = prime * result + ((subType == null) ? 0 : subType.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		return result;
 	}
 
@@ -72,7 +73,9 @@ public class Node implements Dirty {
 				return false;
 		} else if (!key.equals(other.key))
 			return false;
-		if (disabled != other.disabled)
+		if (subType != other.subType)
+			return false;
+		if (type != other.type)
 			return false;
 		return true;
 	}
