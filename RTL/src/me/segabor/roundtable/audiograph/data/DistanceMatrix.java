@@ -58,7 +58,7 @@ public class DistanceMatrix implements Dirty {
 			
 			t = new int[s + 1]; // node(i) types
 			for (int k = 0; k < s; k++) {
-				t[k] = nodes[k].getType();
+				t[k] = nodes[k].getNodeType().ordinal();
 			}
 			t[s] = NodeType.OUT.ordinal(); // expand type array
 			

@@ -85,14 +85,6 @@ public class Node implements Dirty {
 		return key;
 	}
 	
-	/**
-	 * Return node type
-	 * @return
-	 */
-	public int getType() {
-		return type.ordinal();
-	}
-
 	public NodeType getNodeType() {
 		return type;
 	}
