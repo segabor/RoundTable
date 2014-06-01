@@ -43,7 +43,7 @@ public class Node implements Dirty {
 	public Node(NodeKey key, NodeType type, NodeSubtype subType) {
 		this.key = key;
 		this.type = type;
-		this.subType = subType;
+		this.subType = subType != null ? subType : NodeSubtype.UNKNOWN;
 	}
 
 

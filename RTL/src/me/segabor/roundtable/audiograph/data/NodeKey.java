@@ -1,5 +1,6 @@
 package me.segabor.roundtable.audiograph.data;
 
+import me.segabor.roundtable.audiograph.data.TuioMapperUtil.TypeMap;
 import TUIO.TuioObject;
 
 
@@ -18,33 +19,13 @@ public class NodeKey extends Key<NodeType, Long> {
 	 * @return
 	 */
 	public static NodeKey toKey(TuioObject obj) {
-		final NodeType _t = NodeType.mapType(obj.getSymbolID());
-		final long _id = genID(obj); 
-
-		return new NodeKey(_t, _id);
+		TypeMap tm = TuioMapperUtil.mapTuio(obj);
+		return toKey(tm);
 	}
 
-
-	/**
-	 * Map Tuio ID to node ID
-	 * 
-	 * A TUIO object identifier is composed of two data
-	 * 
-	 * <ul>
-	 * <li>Session ID - this ID is bound to actual TUIO session</li>
-	 * <li>Symbol ID - Fiducial Symbol ID</li>
-	 * </ul>
-	 * 
-	 * @param obj A {@link TuioObject} 
-	 * @return A key
-	 */
-	private static long genID(TuioObject obj) {
-		final long sessionId = obj.getSessionID();
-		final int symbolId = obj.getSymbolID();
-
-		return sessionId << 8 | symbolId;
+	public static NodeKey toKey(TypeMap tm) {
+		return new NodeKey(tm.type, tm.id);
 	}
-
 
 	public static final long EXTREME_ID_OFFSET = 255;
 
