@@ -4,3 +4,6 @@
 [submodule "processing"]
 	path = processing
 	url = git://github.com/processing/processing.git
+[submodule "TUIO11_JAVA"]
+	path = TUIO11_JAVA
+	url = https://github.com/mkalten/TUIO11_JAVA.git
