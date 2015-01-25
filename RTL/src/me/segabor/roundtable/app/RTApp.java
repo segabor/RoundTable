@@ -22,6 +22,7 @@ import me.segabor.roundtable.ui.Surface;
 import me.segabor.roundtable.ui.TableTopDrawer;
 import processing.core.PApplet;
 import processing.core.PVector;
+import TUIO.TuioBlob;
 import TUIO.TuioClient;
 import TUIO.TuioCursor;
 import TUIO.TuioListener;
@@ -405,6 +406,24 @@ public class RTApp extends PApplet {
 				// processSessionId(obj);
 				objectEvents.add(obj);
 			}
+		}
+
+		@Override
+		public void addTuioBlob(TuioBlob tblb) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void updateTuioBlob(TuioBlob tblb) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void removeTuioBlob(TuioBlob tblb) {
+			// TODO Auto-generated method stub
+			
 		}
 	}
 }
