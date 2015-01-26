@@ -19,6 +19,7 @@ Actually it can be run from [Eclipse](http://eclipse.org), no binary is availabl
 
 *  Import **JavaOSC** module as an existing Maven project into Eclipse. You'll see three new projects appeared in the Project Explorer (JavaOSC, javaosc-core and javaosc-ui).
 *  Import **processing-core** project from _processing_ folder (Import existing project into Workspace). We only need this project from the collection.
+*  Import **TUIO11_JAVA** project.
 *  Now import the main project **RTL**
 
 ## Other softwares you might consider
